@@ -1,0 +1,310 @@
+*/-------------------------------------------------------------*/
+URsTats is made by Alphahusky aka Puss-N-Boots
+You may contact me at: alphahusky@gmail.com with any
+questions,concerns, comments. Or visit me at:
+http://www.alphahusky.info
+
+Also keep in mind, this software is BETA. This means
+can go wrong and/or may not function 100% or even the 
+way you'd prefer them.
+
+Disclaimer:
+This software is NOT to be sold for various reasons.
+One of which, and most importantly, I have material
+such as images and or logos that are copywritten, 
+and/or trademarked to FS. Legally, this software 
+CANNOT be sold due to restrictions with the afformentioned.
+Also, I personally find it ridiculous to sell software
+that is to be used with a FREE game.
+
+This software is meant to be used as is and I assume
+no responsibilty for loss of time or potential damage
+or harm to any machine or software component therein.
+Though there isn't a bit of code in my software that 
+can harm your box, I still must offer this disclaimer
+for those that may find some way to unintentionally
+screw something up :P
+*/--------------------------------------------------------------*/
+
+
+INSTALLATION:
+A:
+A-------------------------------------------------------------------------------------------------------A
+ Extract the files any directory of your web server:
+	There are 202 files/directories. All of which are named below.
+A-------------------------------------------------------------------------------------------------------A
+
+
+B: 
+B-------------------------------------------------------------------------------------------------------B
+Change the file permissions of every file in the "/includes" directory to 0666.
+* From the Terminal:
+	*cd to the urstats directory
+	*chmod -R 666 includes
+* From FilzeZilla FTP
+	* Right Click -> Properties
+	* Check all the W boxes.
+	* Check the "Set Group,Owner and Permissions Recursively".
+	* Click "OK"
+
+When you are done with the install, MAKE SURE TO CHANGE the file permissions back to 644!
+Unless you want anyone to see your username and password for your database.
+B-------------------------------------------------------------------------------------------------------B
+
+
+C:
+C-------------------------------------------------------------------------------------------------------C
+1. Point your browser to the install directory and follow the instructions. (/urstats/install/)
+2. !IMPORTANT! After successful installation and creation of the Primary User, you MUST DELETE the /install/ directory!
+3. Navigate your browser to your installation.
+4. Log in. Click on Admin. Click on Go button beside Manage Servers to Add a server.
+5. Create any additional Users. Only Super Admins will have access to the Admin area! This should be reserved for server/clan owners! All others should just be Admin.
+6. Create any additional Rules you would like to add to auto-ban. 
+7. Enjoy! Again, if you have any question/concerns/comments, let me know - alphahusky@gmail.com or visit me at: http://www.alphahusky.info
+C-------------------------------------------------------------------------------------------------------C
+
+****************************ADDITIONAL NOTES*******************************
+=-=-=-RCON=-=-=-
+I've also designed URsTats to log EVERY command by every user that uses the Console Emulators.
+Right now, there is no way to look at the log without direct access to your database. (Coming soon though).
+URsTats is also designed so that clan/server owners/leaders, never have to give out their RCON password.
+This way, when an Admin decides to become rogue.. well.. Just delete his/her name from URsTats and 
+he will no longer have access to anything and you don't have to change your RCON password :P
+If, in the event, someone tries to access the RCON password by means of the Console Emulator, 
+the console will give an ERROR stating they are not allowed to use this command. All commands MUST
+be entered WITHOUT the word "rcon" preceeding the command. Otherwise, it WILL return an error!
+
+=-=-=-ADDITIONAL CVARS=-=-=-
+I have added two CVARS that can be use ONLY in the Console Emulators.
+For now, these CVARS can ONLY be used on the box that URsTats is installed.
+You must create a file called slap_script.cfg in your q3ut4 directory.
+Change the file permissions to 777.
+Change the $script_path in the defs.php file to server path of your
+q3ut4 directory as shown in the example above.
+
+These 2 CVARS are:
+(Note: DO NOT USE QUOTES when issuing either command. The software already does that :P)
+
+bigslap:
+Description: This CVAR will slap a player to death and issue text to the player it is invoked against.
+Usage:  bigslap <player_id> <text>
+		Player_id: This is the player number of the player you want to invoke this command upon. This switch is NOT optional.
+		Text: This will be the quoted text you issue with this command. This text will only appear to the player in which the command is invoked against. This switch is optional.
+Example: bigslap 0 You need to stop being an asshat.
+
+pwnkick:
+Description: This CVAR will first send a message to all players in the server with a custom or pre-defined message. It will then slap the player (in which the command was issued against) to death. Finally, the script will proceed to kick that player.
+Usage:  pwnkick <player_id> <text>
+		Player_id: This is the player number of the player you want to invoke this command upon. This switch is NOT optional.
+		Text: This will be the quoted text you issue with this command. This text will appear to all players . This switch is optional.
+Example: pwnkick 0 Come back when you can respect our rules!
+***************************************************************************
+
+
+
+*********************URsTats FILES***************************
+/urstats/admin
+/urstats/exec
+/urstats/files.txt
+/urstats/includes
+/urstats/index.php
+/urstats/install
+/urstats/login.php
+/urstats/logout.php
+/urstats/main.php
+/urstats/search
+/urstats/settings
+/urstats/signin.php
+/urstats/theme
+/urstats/admin/adduser
+/urstats/admin/ban
+/urstats/admin/func
+/urstats/admin/getusers.php
+/urstats/admin/index.php
+/urstats/admin/servers
+/urstats/admin/adduser/index.php
+/urstats/admin/ban/index.php
+/urstats/admin/func/check_access.php
+/urstats/admin/func/check_admin.php
+/urstats/admin/servers/index.php
+/urstats/exec/GetPlayers.php
+/urstats/exec/rcon_class.php
+/urstats/includes/config.php
+/urstats/includes/defs.php
+/urstats/includes/get_theme.php
+/urstats/includes/logincfg.php
+/urstats/install/index.php
+/urstats/install/install2.php
+/urstats/search/index.php
+/urstats/search/searchform.php
+/urstats/search/searchresults.php
+/urstats/settings/index.php
+/urstats/theme/alphatech
+/urstats/theme/borderz
+/urstats/theme/clear_black
+/urstats/theme/CoDFaction
+/urstats/theme/deepblue
+/urstats/theme/matrix
+/urstats/theme/pinkurple
+/urstats/theme/smiley
+/urstats/theme/smileyblue
+/urstats/theme/UrbanTerror
+/urstats/theme/alphatech/overallfooter.php
+/urstats/theme/alphatech/overallheader.php
+/urstats/theme/alphatech/styles
+/urstats/theme/alphatech/styles/images
+/urstats/theme/alphatech/styles/style.css
+/urstats/theme/alphatech/styles/images/bg5.png
+/urstats/theme/alphatech/styles/images/bgopac.png
+/urstats/theme/alphatech/styles/images/b_del.png
+/urstats/theme/alphatech/styles/images/b_edit.png
+/urstats/theme/alphatech/styles/images/b_print.png
+/urstats/theme/alphatech/styles/images/grid.png
+/urstats/theme/alphatech/styles/images/logged_off.png
+/urstats/theme/alphatech/styles/images/logged_on.png
+/urstats/theme/alphatech/styles/images/logout.png
+/urstats/theme/borderz/overallfooter.php
+/urstats/theme/borderz/overallheader.php
+/urstats/theme/borderz/styles
+/urstats/theme/borderz/styles/images
+/urstats/theme/borderz/styles/style.css
+/urstats/theme/borderz/styles/images/bg5.png
+/urstats/theme/borderz/styles/images/bgopac.png
+/urstats/theme/borderz/styles/images/b_del.png
+/urstats/theme/borderz/styles/images/b_edit.png
+/urstats/theme/borderz/styles/images/b_print.png
+/urstats/theme/borderz/styles/images/grid.png
+/urstats/theme/borderz/styles/images/logged_off.png
+/urstats/theme/borderz/styles/images/logged_on.png
+/urstats/theme/borderz/styles/images/logout.png
+/urstats/theme/clear_black/overallfooter.php
+/urstats/theme/clear_black/overallheader.php
+/urstats/theme/clear_black/styles
+/urstats/theme/clear_black/styles/images
+/urstats/theme/clear_black/styles/style.css
+/urstats/theme/clear_black/styles/images/bg5.png
+/urstats/theme/clear_black/styles/images/bgopac.png
+/urstats/theme/clear_black/styles/images/bgtest.png
+/urstats/theme/clear_black/styles/images/b_del.png
+/urstats/theme/clear_black/styles/images/b_edit.png
+/urstats/theme/clear_black/styles/images/b_print.png
+/urstats/theme/clear_black/styles/images/grid.png
+/urstats/theme/clear_black/styles/images/logged_off.png
+/urstats/theme/clear_black/styles/images/logged_on.png
+/urstats/theme/clear_black/styles/images/logout.png
+/urstats/theme/CoDFaction/overallfooter.php
+/urstats/theme/CoDFaction/overallheader.php
+/urstats/theme/CoDFaction/styles
+/urstats/theme/CoDFaction/styles/images
+/urstats/theme/CoDFaction/styles/style.css
+/urstats/theme/CoDFaction/styles/images/bg.jpg
+/urstats/theme/CoDFaction/styles/images/bg5.png
+/urstats/theme/CoDFaction/styles/images/bgopac.png
+/urstats/theme/CoDFaction/styles/images/blank.gif
+/urstats/theme/CoDFaction/styles/images/b_del.png
+/urstats/theme/CoDFaction/styles/images/b_edit.png
+/urstats/theme/CoDFaction/styles/images/b_print.png
+/urstats/theme/CoDFaction/styles/images/b_print2.png
+/urstats/theme/CoDFaction/styles/images/cell1.jpg
+/urstats/theme/CoDFaction/styles/images/cell2.jpg
+/urstats/theme/CoDFaction/styles/images/containerbg.jpg
+/urstats/theme/CoDFaction/styles/images/contenttopbg.jpg
+/urstats/theme/CoDFaction/styles/images/grid.png
+/urstats/theme/CoDFaction/styles/images/h4.gif
+/urstats/theme/CoDFaction/styles/images/input.jpg
+/urstats/theme/CoDFaction/styles/images/logged_off.png
+/urstats/theme/CoDFaction/styles/images/logged_on.png
+/urstats/theme/CoDFaction/styles/images/nav.jpg
+/urstats/theme/CoDFaction/styles/images/password.jpg
+/urstats/theme/CoDFaction/styles/images/row.png
+/urstats/theme/CoDFaction/styles/images/spacer.gif
+/urstats/theme/CoDFaction/styles/images/spacer.jpg
+/urstats/theme/CoDFaction/styles/images/submit.jpg
+/urstats/theme/CoDFaction/styles/images/textarea.jpg
+/urstats/theme/CoDFaction/styles/images/topbar.jpg
+/urstats/theme/CoDFaction/styles/images/topbarbg.gif
+/urstats/theme/CoDFaction/styles/images/topbarbg.jpg
+/urstats/theme/CoDFaction/styles/images/topinput.gif
+/urstats/theme/CoDFaction/styles/images/username.jpg
+/urstats/theme/deepblue/overallfooter.php
+/urstats/theme/deepblue/overallheader.php
+/urstats/theme/deepblue/styles
+/urstats/theme/deepblue/styles/images
+/urstats/theme/deepblue/styles/style.css
+/urstats/theme/deepblue/styles/images/bg5.png
+/urstats/theme/deepblue/styles/images/bgopac.png
+/urstats/theme/deepblue/styles/images/b_del.png
+/urstats/theme/deepblue/styles/images/b_edit.png
+/urstats/theme/deepblue/styles/images/b_print.png
+/urstats/theme/deepblue/styles/images/grid.png
+/urstats/theme/deepblue/styles/images/logged_off.png
+/urstats/theme/deepblue/styles/images/logged_on.png
+/urstats/theme/deepblue/styles/images/logout.png
+/urstats/theme/matrix/overallfooter.php
+/urstats/theme/matrix/overallheader.php
+/urstats/theme/matrix/styles
+/urstats/theme/matrix/styles/images
+/urstats/theme/matrix/styles/style.css
+/urstats/theme/matrix/styles/images/bg5.png
+/urstats/theme/matrix/styles/images/bgopac.png
+/urstats/theme/matrix/styles/images/b_del.png
+/urstats/theme/matrix/styles/images/b_edit.png
+/urstats/theme/matrix/styles/images/b_print.png
+/urstats/theme/matrix/styles/images/grid.png
+/urstats/theme/matrix/styles/images/logged_off.png
+/urstats/theme/matrix/styles/images/logged_on.png
+/urstats/theme/pinkurple/overallfooter.php
+/urstats/theme/pinkurple/overallheader.php
+/urstats/theme/pinkurple/styles
+/urstats/theme/pinkurple/styles/images
+/urstats/theme/pinkurple/styles/style.css
+/urstats/theme/pinkurple/styles/images/bg5.png
+/urstats/theme/pinkurple/styles/images/bgopac.png
+/urstats/theme/pinkurple/styles/images/b_del.png
+/urstats/theme/pinkurple/styles/images/b_edit.png
+/urstats/theme/pinkurple/styles/images/b_print.png
+/urstats/theme/pinkurple/styles/images/grid.png
+/urstats/theme/pinkurple/styles/images/logged_off.png
+/urstats/theme/pinkurple/styles/images/logged_on.png
+/urstats/theme/smiley/overallfooter.php
+/urstats/theme/smiley/overallheader.php
+/urstats/theme/smiley/styles
+/urstats/theme/smiley/styles/images
+/urstats/theme/smiley/styles/style.css
+/urstats/theme/smiley/styles/images/bg5.png
+/urstats/theme/smiley/styles/images/bgopac.png
+/urstats/theme/smiley/styles/images/b_del.png
+/urstats/theme/smiley/styles/images/b_edit.png
+/urstats/theme/smiley/styles/images/b_print.png
+/urstats/theme/smiley/styles/images/grid.png
+/urstats/theme/smiley/styles/images/logged_off.png
+/urstats/theme/smiley/styles/images/logged_on.png
+/urstats/theme/smileyblue/overallfooter.php
+/urstats/theme/smileyblue/overallheader.php
+/urstats/theme/smileyblue/styles
+/urstats/theme/smileyblue/styles/images
+/urstats/theme/smileyblue/styles/style.css
+/urstats/theme/smileyblue/styles/images/bg5.png
+/urstats/theme/smileyblue/styles/images/bgopac.png
+/urstats/theme/smileyblue/styles/images/b_del.png
+/urstats/theme/smileyblue/styles/images/b_edit.png
+/urstats/theme/smileyblue/styles/images/b_print.png
+/urstats/theme/smileyblue/styles/images/grid.png
+/urstats/theme/smileyblue/styles/images/logged_off.png
+/urstats/theme/smileyblue/styles/images/logged_on.png
+/urstats/theme/UrbanTerror/overallfooter.php
+/urstats/theme/UrbanTerror/overallheader.php
+/urstats/theme/UrbanTerror/styles
+/urstats/theme/UrbanTerror/styles/images
+/urstats/theme/UrbanTerror/styles/style.css
+/urstats/theme/UrbanTerror/styles/images/bg3blue.png
+/urstats/theme/UrbanTerror/styles/images/bg5.png
+/urstats/theme/UrbanTerror/styles/images/bgopac.png
+/urstats/theme/UrbanTerror/styles/images/bgtest.png
+/urstats/theme/UrbanTerror/styles/images/b_del.png
+/urstats/theme/UrbanTerror/styles/images/b_edit.png
+/urstats/theme/UrbanTerror/styles/images/b_print.png
+/urstats/theme/UrbanTerror/styles/images/logged_off.png
+/urstats/theme/UrbanTerror/styles/images/logged_on.png
+/urstats/theme/UrbanTerror/styles/images/mail.png
+/urstats/theme/UrbanTerror/styles/images/ut_menuback.jpg
