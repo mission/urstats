@@ -173,7 +173,7 @@ if(isset($_GET['mode'])){
 	mysql_query("UPDATE `urts_users` SET theme='".$_POST[themeb]."' where username='".$uname."'") or die(mysqsl_error());
 	
 
-//Seperate what user sees and safe name of themes
+//Separate what user sees and safe name of themes
 	if($_POST['themeb'] == 'alphatech'){
 		$them =('Alphatech');
 		}

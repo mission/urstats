@@ -4,7 +4,7 @@ $html_root = $_SERVER['DOCUMENT_ROOT']; //Do not change <--
 
 //Changeable defs - ONLY EDIT THESE -
 $site_name    = ""; //Your full site address WITHOUT the trailing /. Example: http://www.alphahusky.info
-$install_path = "/test/testing"; // !IMPORTANT! Read Below -->
+$install_path = ""; // !IMPORTANT! Read Below -->
 /*--------------------------
 $install_path --> Where this install is in relation to the root directory. 
 Example: If it's at, http://www.yoursite.com/server2/, then

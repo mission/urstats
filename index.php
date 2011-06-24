@@ -1,52 +1,71 @@
 <?php
-//Workorder
-define("INCLUDE_CHECK", true);
-$base = dirname(__FILE__);
-include("{$base}/includes/config.php");
-include("{$base}/main.php");
-include("{$base}/includes/defs.php");
-$page_title = "URsTats - Admin Control Panel";
-function checkNum($num){
-  return ($num%2) ? TRUE : FALSE;
-}
-include ($theme_path.'overallheader.php');
+
+	/*Import critical files and define page title 
+	==================================================*/
+	define("INCLUDE_CHECK", true);
+	$base = dirname(__FILE__);
+	
+	include("{$base}/includes/config.php");
+	include("{$base}/main.php");
+	include("{$base}/includes/defs.php");
+	include("{$base}/includes/check_access.php");
+
+	$page_title = "URsTats - Admin Control Panel";
+
+	include ($theme_path.'overallheader.php');
+	/*================================================*/
 
 
-//Determine mode
-if(isset($_GET['mode'])){
-	$type = $_GET['type'];
-	$mode = $_GET['mode'];
-	$id   = $_GET['id'];
+	
+	
+	/*Determine Mode and set page body accordingly 
+	==================================================*/	
+	if(isset($_GET['mode'])){
+		$type = $_GET['type'];
+		$mode = $_GET['mode'];
+		$id   = $_GET['id'];
 
-	if($mode == "view"){
-		if(isset($type)){
-			If($type == "server"){			
-				echo view($id);
-			}
-			elseif($type == "indserver"){
-				echo viewserver();
+		switch ($mode){
+			case "view":
+				if(isset($type)){
+					switch ($type){
+						case "server":			
+							echo view($id);
+							break;
+					
+						case "indserver":
+							echo viewserver();
+							break;
+					
+						case "cheaters":
+							echo vcheaters();
+							break;
+					
+						default:
+							echo main();
+					}
 				}
-			elseif($type == "cheaters"){
-				echo vcheaters();
+				else{
+					echo main();
 				}
-			else{
+				break;
+			
+			default:
 				echo main();
-			}
-		}
-		else{
-			echo main();
+				break;
 		}
 	}
-	elseif($mode == ""){
+	else{
 		echo main();
 	}
-}
+	/*================================================*/
 
-//No action
-else{
-	echo main();
-}
+	
+	
 
-include($theme_path.'overallfooter.php');
+	/*Page footer
+	==================================================*/
+	include($theme_path.'overallfooter.php');
+	/*================================================*/	
 
 ?>

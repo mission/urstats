@@ -83,7 +83,7 @@ if(isset($_POST['submit'])){
 		echo "<div align='center'>Your passwords do not match!</div>";
 		}
 	else{
-		$password = md5($pass);
+		$password = sha1(md5($pass));
 		$username = addslashes($username);
 		$email    = addslashes($email);
 		$type     = "super";

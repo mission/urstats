@@ -3,15 +3,15 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   
 <?php 
-define("INCLUDE_CHECK", true);
-
+	define("INCLUDE_CHECK", true);
+	include("{$base}/includes/config.php");
 
  echo "<title>{$page_title}</title>";
 echo "
 <link rel='stylesheet' type='text/css' href='{$u_theme_path}styles/style.css' media='screen' />";
 
-	include("{$base}/includes/config.php");
 
+	//Get unread messages
 	$result = mysql_query("SELECT `read` FROM `private_msg` WHERE `read`='0' AND `to`='$uname'");
 	$msg_count = mysql_num_rows($result);
 	if($msg_count > 0){
@@ -23,6 +23,7 @@ echo "
 			}
 		$new_msgs = "<a href='$linkrel/settings/'>You have $msg_count new $msg_abr</a>";
 		}
+		
 echo"
 </head>
 <body>

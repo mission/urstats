@@ -1,32 +1,81 @@
 <?php 
-define("INCLUDE_CHECK", true);
-$base = substr_replace(dirname(__FILE__),'',-13);
-include ("$base/includes/config.php");
-include ("../../includes/defs.php");
-$page_title = 'Add User';
-include($adfuncl.'check_access.php');
-include($theme_path.'/overallheader.php');
+
+	/*Import critical files and define page title 
+	==================================================*/
+	
+	define("INCLUDE_CHECK", true);
+	$base = substr_replace(dirname(__FILE__),'',-13);
+	
+	include ("$base/includes/config.php");
+	include ("../../includes/defs.php");
+	
+	$page_title = 'Add User';
+	
+	include('../../includes/check_access.php');
+	include($theme_path.'overallheader.php');
+	
+	/*================================================*/
+	
+	
+	
+	
+	/*Are they super admin?
+	==================================================*/
+	
+	if(!issuperadmin($uname)){
+	
+		echo "<div align='center'>You are not allowed to view this page!</div>";
+		
+		include($theme_path.'overallfooter.php');
+		
+		die();
+		}
+	
+	/*================================================*/
 
  
- if (isset($_POST['submit'])){ 
- 	if (!$_POST['username'] | !$_POST['pass'] | !$_POST['pass2']){
-		die('You did not complete all of the required fields');
-	}
-		$username = addslashes($_POST['username']);
- 	
-		$check = mysql_query("SELECT `username` FROM `urts_users` WHERE `username`='$username'") or die(mysql_error());
-		$check2 = mysql_num_rows($check);
-			if ($check2 != 0) {
-				die('Sorry, the username '.$username.' is already in use.');
- 			}
-			if ($_POST['pass'] != $_POST['pass2']) {
-				die('Your passwords did not match. ');
-			}
-				$password = $_POST['pass'];
-				$password = md5($password);
-				$username = addslashes($username);
-				$email    = addslashes($_POST['email']);
-				$a_status = strtolower($_POST['astatus']);
+ 
+ 	/*Check username and password, then ADD NEW USER
+	==================================================*/
+ 
+	if (isset($_POST['submit'])){ 
+		
+		/* Make sure they filled out Username and Password fields */
+		
+		if (!$_POST['username'] | !$_POST['pass'] | !$_POST['pass2']){
+		
+			die('You did not complete all of the required fields');
+		}
+		
+		
+		/* Make sure the user does not exist */	
+		
+		$username = addslashes($_POST['username']); 	
+		$check    = mysql_query("SELECT `username` FROM `urts_users` WHERE `username`='$username'") or die(mysql_error());		
+		$rows     = mysql_num_rows($check);
+				
+		if ($rows != 0) {
+			die('Sorry, the username '.$username.' is already in use.');
+ 		}
+		
+			
+			
+		/* Make sure their passwords match */
+		
+		if ($_POST['pass'] != $_POST['pass2']) {
+			die('Your passwords did not match. ');
+		}
+		
+		
+		
+		/* If everything matches, enrypt password 
+		and save to database */
+		
+		$password = $_POST['pass'];
+		$password = sha1(md5($password));
+		$username = addslashes($username);
+		$email    = addslashes($_POST['email']);
+		$a_status = strtolower($_POST['astatus']);
 			
 		mysql_query("INSERT INTO `urts_users` (`username`, `password`,`email`,`type`) VALUES ('$username', '$password', '$email','$a_status')") or die ("There was a problem registering the new user. Please contact your system administrator!");
 		
@@ -60,10 +109,16 @@ include($theme_path.'/overallheader.php');
 			</table>";
 			
    
-}
-else{
+	}
+	/*================================================*/	
 
-echo "
+
+
+ 	/*Primary body page
+	==================================================*/	
+	else{
+
+		echo "
    <div align='center'>
 	<table>
 		<tr>
@@ -108,6 +163,14 @@ echo "
 	</tr>
 </table>";
 } 
+	/*================================================*/	
 
-include($theme_path.'overallfooter.php');
+
+
+ 	/*Send footer
+	==================================================*/
+	
+	include($theme_path.'overallfooter.php');
+	
+	/*================================================*/
 ?> 

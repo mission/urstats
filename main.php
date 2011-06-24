@@ -2,121 +2,137 @@
 
 function view($id){
 
-include_once('exec/rcon_class.php');
-include ('includes/config.php');
-include ('includes/defs.php');
+	include_once('exec/rcon_class.php');
+	include ('includes/config.php');
+	include ('includes/defs.php');
 
-$dt = time();
-$dtc = time("M d y");
+	$dt = time();
+	$dtc = time("M d y");
+
+	$sql=("SELECT * FROM `servers` WHERE `id`='{$id}'");
+	$result = mysql_query($sql);
+	
+	//Fetch Game Server Info
+	while ($data = mysql_fetch_assoc($result)) {
+		$svname  = stripslashes($data['name']);
+		$svname  = stripslashes($svname);
+		$svip    = $data['ip'];
+		$svport  = $data['port'];
+		$svrcon  = stripslashes($data['rconpass']);
+		$r       = new rcon_cmd("$svip", "$svport", "$svrcon");
+	}
 
 	
-//Connect to dbase and retrieve server info
-mysql_connect("$db_host", "$db_user", "$db_pass") or die(mysql_error());
-mysql_select_db("$db_database") or die(mysql_error());
-$sql=("SELECT * FROM `servers` WHERE `id`='{$id}'");
-$result = mysql_query($sql);
-while ($data=mysql_fetch_assoc($result)) {
-	$svname  = stripslashes($data['name']);
-	$svname  = stripslashes($svname);
-	$svip    = $data['ip'];
-	$svport  = $data['port'];
-	$svrcon  = stripslashes($data['rconpass']);
-	$r       = new rcon_cmd("$svip", "$svport", "$svrcon");
-	
-}
-
-if(isset($_POST['send'])){
-//Log info to database
-	$cmd      = $_POST['cmd'];
-	$username = $uname;
-	$ip       = $_SERVER['REMOTE_ADDR'];
-	$ip       = addslashes($ip);
-	$cmd_db   = addslashes($cmd);
-	$timestamp = time();
-	mysql_connect("$db_host", "$db_user", "$db_pass") or die(mysql_error());
-	mysql_select_db("$db_database") or die(mysql_error());
-	mysql_query("INSERT INTO `admin_log`(`admin`,`ip`,`command`,`timestamp`) VALUES('$username','$ip','$cmd_db','$timestamp')");
-	
-	
-//Verify server vars are not changed
-	$cmd_vartest = explode(" ", $cmd);
-	if($cmd_vartest[0] == "set"){
-		echo "Server variables are not allowed to be changed!";
-		die();
-	}
-	elseif($cmd_vartest[0] == "seta"){
-	echo "Server variables are not allowed to be changed!";
-		die();
-	}
-	elseif($cmd_vartest[0] == "rconpassword"){
-	echo "Server variables are not allowed to be changed!";
-		die();
-	}
-	elseif($cmd_vartest[0] == "rcon"){
-	echo "Server variables are not allowed to be changed!";
-		die();
-	}
-	else{
-//Send RCON command	
-	//Bigslap
-	if($cmd_vartest[0] == "bigslap"){
-		$pid = $cmd_vartest[1];
-		$slap = "slap $pid\n wait 20\n";
-		if($cmd_vartest[2] == ""){
-			$bigtext = "tell $pid \"You just got nailed to the wall by $username!\"";
-		}
-		else{
-			$bt_var = str_replace("bigslap ".$pid, "\"", $cmd);
-			$bt_var = $bt_var."\"";
-			$bigtext = "tell $pid $bt_var";
-		}
-		//
-		$slap_script_file = "slap_script.cfg";
-		$slap_script = ("{$script_path}{$slap_script_file}");
-		$hits = file($slap_script);
-		$fp = fopen($slap_script , "w");
-		fputs($fp , "{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$bigtext}");
-		fclose($fp);
-		//
+	//Send command from emulator
+	if(isset($_POST['send'])){
+		$command   = $_POST['cmd'];
+		$username  = $uname;
+		$ip        = $_SERVER['REMOTE_ADDR'];
+		$cmd_db    = addslashes($command);
+		$timestamp = time();
+		$bad_cmd   = "Server variables are not allowed to be changed!";
 		
-		$cmd = "exec $slap_script_file";
-		$r->send_command($cmd);
-		$get_response ="You nailed him to the WALL!";
-	}
-	//pwnkick - Slaps, Warns, Kicks
-	elseif($cmd_vartest[0] == "pwnkick"){
-		$pid = $cmd_vartest[1];
-		$slap = "slap $pid\n wait 20\n";
-		$kick = "kick $pid";
-		if($cmd_vartest[2] == ""){
-			$bigtext = "tell $pid \"Don't be an asshat!!\" \n wait 1000\n";
-		}
-		else{
-			$bt_var = str_replace("pwnkick ".$pid, "\"", $cmd);
-			$bt_var = $bt_var."\" \n wait 1000\n";
-			$bigtext = "bigtext $bt_var";
-		}
-		//
-		$slap_script_file = "slap_script.cfg";
-		$slap_script = ("{$script_path}{$slap_script_file}");
-		$hits = file($slap_script);
-		$fp = fopen($slap_script , "w");
-		fputs($fp , "{$bigtext}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$kick}");
-		fclose($fp);
-		//
+		//Add an entry to log
+		mysql_query("INSERT INTO `admin_log`(`admin`,`ip`,`command`,`timestamp`) VALUES('$username','$ip','$cmd_db','$timestamp')");
+	
+	
+		//Verify server vars are not changed
+		$cmd_vartest = explode(" ", $command);
+		$vartest     = $cmd_vartest[0];
+		$pid         = $cmd_vartest[1];
+		$say         = $cmd_vartest[2];
 		
-		$cmd = "exec $slap_script_file";
-		$r->send_command($cmd);
-		$get_response ="Player $pid was pwnt!!";
-	}
-	else{
-		$r->send_command($cmd);
-		$get_response = $r->get_response();
+		/*Set some constants:
+		Actions*/
+		$slap        = "slap $pid\n wait 20\n";
+		$kick        = "kick $pid";
+		
+		//File to write to
+		$slap_script_file = "slap_script.cfg";
+		$slap_script 	  = ("{$script_path}{$slap_script_file}");
+		$fp 			  = fopen($slap_script , "w");
+	
+		//These commands are NOT allowed
+		$not_allowed = array("set", "seta", "rcon", "rconpassword","password","sv_","cl_");
+	
+		//Check if they are using illegal commands
+		if(!issuperadmin($uname)){
+			foreach($not_allowed as $na){
+				if($na == $vartest){
+					$get_response = $bad_cmd;
+					break;
+					}
+			}
 		}
-	}
-}
+		
+		if($get_response !== $bad_cmd){
+		
+			//Check for other commands
+			switch ($vartest){
+		
+				case "bigslap":		
 
-//HTML
+					//If the admin did not offer a phrase after the command
+					if($say == ""){
+						$bigtext = "tell $pid \"You just got nailed to the wall by $username!\"";
+					}
+					else{
+						$bt_var = str_replace("bigslap ".$pid, "\"", $command);
+						$bt_var = $bt_var."\"";
+						$bigtext = "tell $pid $bt_var";
+					}
+				
+					//Write to the file
+					fputs($fp , "{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$bigtext}");
+					fclose($fp);
+				
+					//Send the command to the server
+					$cmd = "exec $slap_script_file";
+					$r->send_command($cmd);
+				
+					//Send response back to emulator upon success
+					$get_response ="You nailed him to the WALL!";
+					break;
+			
+				case "pwnkick":
+				
+					//If the admin did not offer a phrase after the command
+					if($say == ""){
+						$bigtext = "tell $pid \"Don't be an asshat!!\" \n wait 1000\n";
+					}
+					else{
+						$bt_var  = str_replace("pwnkick ".$pid, "\"", $command);
+						$bt_var  = $bt_var."\" \n wait 1000\n";
+						$bigtext = "bigtext $bt_var";
+					}
+			
+					//Write to the file				
+					fputs($fp , "{$bigtext}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$slap}{$kick}");
+					fclose($fp);
+				
+					//Send the command to the server
+					$cmd = "exec $slap_script_file";
+					$r->send_command($cmd);
+				
+					//Send response back to emulator upon success
+					$get_response ="Player $pid was pwnt!!";
+					break;
+			
+				default:
+					//If custom commands are not used. Send command straight to server
+					$cmd = $command;
+					$r->send_command($cmd);
+				
+					//Remove ^7 and get response
+					$get_response = str_replace("^7", "", $r->get_response());
+				
+				
+			}
+		}
+	
+	}
+
+//Console Emulator Page
 echo "
 <table style='width:100%'>
     <tr>
@@ -155,25 +171,29 @@ echo "
 					<td class='container3'>Options</td>
 				</tr>					
 					";
-			//Let's set time back a little (5 Minutes = 300 seconds) to catch online players within last 5 minutes		
+			/*Let's set time back a little (5 Minutes = 300 seconds) 
+			to catch online players within last 5 minutes */	
 			$time_now = time();
 			$s_time = $time_now - 300;
-			//
-			//Make the server name readable by database
+			
 			$ssv_name = addslashes($svname);
-			//
-			$players = mysql_query("SELECT * FROM `players` WHERE `last` > $s_time AND `laston`='$ssv_name' ORDER BY `slot`") or die(mysql_error());
+			
+			$players = mysql_query("SELECT * FROM `players` WHERE `last` 
+						> $s_time AND `laston`='$ssv_name' ORDER BY `slot`")
+						or die(mysql_error());
 			$p_count = mysql_num_rows($players);
+			
+			//If there are players online, display them
 			if($p_count > 0){
-			while($player = mysql_fetch_assoc($players)){
-				$p_num   = $player['slot'];
-				$p_score = $player['score'];
-				$p_ping  = $player['ping'];
-				$p_name  = $player['name'];
-				$p_ip    = $player['ip'];
-				$p_qport = $player['qport'];
+				while($player = mysql_fetch_assoc($players)){
+					$p_num   = $player['slot'];
+					$p_score = $player['score'];
+					$p_ping  = $player['ping'];
+					$p_name  = $player['name'];
+					$p_ip    = $player['ip'];
+					$p_qport = $player['qport'];
 				
-				echo"
+					echo"
 				<tr>
 					<td> $p_num </td>
 					<td> $p_score </td>
@@ -194,10 +214,13 @@ echo "
      </tr>
 </table>
 ";
-//Close UDP port
-$r->close();
+		//Close UDP port
+		$r->close();
 }
 
+
+
+//View Cheaters page
 function vcheaters(){
 	include('includes/config.php');
 	include ("includes/defs.php");
@@ -240,73 +263,78 @@ function vcheaters(){
 	
 }
 
-function isadmin($uname){
-		$do = mysql_query("SELECT `type` FROM `urts_users` WHERE `username`='$uname' AND `type`='Super'");
-		$do = mysql_num_rows($do);
-	if($do <= 0){
-		return false;
-		}
-	else{
-		return true;
-		}
-}
 
+
+
+//View individual server statistics
 function viewserver(){
 
 	include ("includes/config.php");
 	include ("includes/defs.php");	
-	$id = $_GET['id'];
-	$results = $_GET['results'];
-	$result = mysql_query("SELECT * FROM `servers` WHERE `id`='$id'") or die("You have selected an invalid server ID");
-	while($data = mysql_fetch_assoc($result)){
-		$name = $data['name'];
-		}
-	//---------------------------------------------------------------//
-if(isset($results)){
-	$page = $results;
-}
-else{
-	$page = 0;
-	}
 	
-$pageup = $page + 20;
-$pagedown = $page - 20;
-
-if ($stype == ""){
-	$stype = "name";
-}
-if($results > 0){
-	$down = "<a href='$linkrel/?mode=view&type=indserver&id={$id}&results=$pagedown'>Previous Page</a>&nbsp;&bull;&nbsp;";
+	$id      = $_GET['id'];
+	
+	$result = mysql_query("SELECT * FROM `servers` WHERE `id`='$id'") or die("You have selected an invalid server ID");
+	$data = mysql_fetch_assoc($result);
+	$name = $data['name'];
+	
+	//Let's see if we need more than 1 page of results
+	$results = $_GET['results'];
+	
+	if(isset($results)){
+		$page = $results;
 	}
 	else{
-	$down = "";
+		$page = 0;
+	}	
+	$pageup   = $page + 20;
+	$pagedown = $page - 20;
+
+	if (!$stype){
+		$stype = "name";
 	}
-$sql2 = mysql_query("SELECT * FROM `players` WHERE `laston`='$name'");
-$row_count = mysql_num_rows($sql2);	
-if(!$row_count){
-	$s_results = "";
+	
+	/*If we are viewing results other than the first page,
+	show the Previous Page link*/
+	if($results > 0){
+		$down = "<a href='$linkrel/?mode=view&type=indserver&id={$id}&results=$pagedown'>Previous Page</a>&nbsp;&bull;&nbsp;";
+	}
+	else{
+		$down = "";
+	}
+	
+	//Get statistics for top of View Server page
+	$sql = mysql_query("SELECT * FROM `players` WHERE `laston`='$name'");
+	$row_count = mysql_num_rows($sql);	
+	
+	if(!$row_count){
+		$s_results = "";
 	}
 	else{
 		$r_sub = $row_count - ($row_count - $results);
 		if($row_count - $results < 20){
 			$d_sub = $r_sub + $row_count - $results;
-			}
-			else{
+		}
+		else{
 			$d_sub = $results + 20;
-			}
+		}
 			$s_results = "Results: $r_sub to $d_sub of $row_count";
 		
-	}	
-if($results + 20 < $row_count){
-	$up ="<a href='$linkrel/?mode=view&type=indserver&id={$id}&results=$pageup'>Next Page</a>";
+	}
+	
+	/*If we have more results than 20
+	show the Next Page link*/
+	if($results + 20 < $row_count){
+		$up ="<a href='$linkrel/?mode=view&type=indserver&id={$id}&results=$pageup'>Next Page</a>";
 	}
 	else{
-	$up = "";
+		$up = "";
 	}
-	//--------------------------------------------------------------------//
+	
 	
 
-echo "
+
+	echo "
 
 	<table style='margin-left:auto;margin-right:auto'>
 		<tr>
@@ -348,7 +376,8 @@ echo "
 						 <td style='color:yellow'>$laston</td>
                     </tr>";
 				}
-			echo"
+				
+				echo"
 				</table>
 			</td>
 		</tr>
@@ -362,16 +391,21 @@ echo "
 
 
 
+
 function main(){
 
 	include ("includes/config.php");
 	include ("includes/defs.php");
 		
+	//All users
 	$result = mysql_query("SELECT * FROM `players`");
 	$t_plays = mysql_num_rows($result);
 	
-		$h_res = mysql_query("SELECT * FROM `players` WHERE `banned`='Yes'");
-		$h_rows = mysql_num_rows($h_res);
+	//Banned Users
+	$h_res = mysql_query("SELECT * FROM `players` WHERE `banned`='Yes'");
+	$h_rows = mysql_num_rows($h_res);
+	
+	//If there are any banned users, scroll marquee
 if($h_rows > 0){
 	echo "<center><font face='terminal' color='red' size='4'><marquee class='container3' width='800px' behavior='scroll' direction='left' scrollamount='4'>WARNING! URsTats has found $h_rows cheaters! Names:";
 	while($h_data = mysql_fetch_assoc($h_res)){	
@@ -388,12 +422,9 @@ if($h_rows > 0){
 	echo "</marquee></font></center><span style='text-align:right'><form method='post' action='$linkrel/?mode=view&type=cheaters'><input type='submit' class='nav' name='cheaters' value='View All' /></form></span>";
 }
 
-				
-if(isadmin($uname)){
-	
-}
-	
-echo "
+
+	//Main page layout
+	echo "
 
 
 	<table style='margin-left:auto;margin-right:auto'>
@@ -414,6 +445,7 @@ echo "
 						 <td><b>Last Seen</b></td>
 						 <td><b>Last Server</b></td>
                     </tr>";
+			//Fetch last 20 players
 			$result = mysql_query("SELECT * FROM `players` ORDER BY `LAST` DESC LIMIT 20");
 				while($data = mysql_fetch_assoc($result)){
 					$id     = $data['id'];
@@ -424,7 +456,7 @@ echo "
 					$added  = $data['added'];
 					$laston = stripslashes($data['laston']);		
 					$last 	= date("m-d-y @ H:i", $last);
-					$added = date("m-d-y @ H:i", $added);
+					$added  = date("m-d-y @ H:i", $added);
 					
 					echo"		
                     <tr>
@@ -448,6 +480,7 @@ echo "
 		<tr>
 			<td colspan='2'></td>
 		</tr>";
+			//Show all game servers
 			$result = mysql_query("SELECT * FROM `servers`");
 				while($data = mysql_fetch_assoc($result)){
 					$id   = $data['id'];
